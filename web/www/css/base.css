@@ -1,0 +1,131 @@
+body, h1, h2, h3, h4, h5, h6, hr, p, dl, dt, dd, ul, ol, li, pre, fieldset, legend, button, input, textarea, select, th, td {
+  margin: 0;
+  padding: 0; }
+
+body {
+  word-wrap: break-word;
+  word-break: break-all; }
+
+body, button, input, select, textarea {
+  font: 12px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  color: #333;
+  vertical-align: middle; }
+
+body{overflow-x: hidden;}
+
+button {
+  font-family: "Microsoft Yahei"; }
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+  color: #000; }
+
+a:hover {
+  text-decoration: none; }
+
+img {
+  border: 0;
+  vertical-align: middle; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+input, button, select {
+  display: inline-block;
+  vertical-align: middle; }
+
+textarea {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 0 5px;
+  border: 1px solid #DADADA;
+  border-top: 1px solid #bababa;
+  resize: none; }
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+  line-height: 1.5;
+  font-weight: 400;
+  font-family: "Lucida Grande","Helvetica Neue",Helvetica,Arial,"Microsoft YaHei","WenQuanYi Micro Hei",sans-serif; }
+
+h1, .h1 {
+  font-size: 36px; }
+
+h2, .h2 {
+  font-size: 30px; }
+
+h3, .h3 {
+  font-size: 24px; }
+
+h4, .h4 {
+  font-size: 18px; }
+
+h5, .h5 {
+  font-size: 14px; }
+
+h6, .h6 {
+  font-size: 12px; }
+
+ul, li {
+  list-style: none;
+  vertical-align: top; }
+
+img {
+  vertical-align: top; }
+
+a, p, dt, dd, dl, h2, h3, h4, h5, span, b, strong, em {
+  -webkit-transition: all 0.25s ease-in 0s;
+  -moz-transition: all 0.25s ease-in 0s;
+  -o-transition: all 0.25s ease-in 0s;
+  transition: all 0.25s ease-in 0s; }
+
+.hidden {
+  display: none !important; }
+
+.clearFix {
+  zoom: 1; }
+
+.clearFix:after {
+  content: "";
+  display: block;
+  clear: both; }
+
+.fl {
+  float: left; }
+
+.fr {
+  float: right; }
+
+/* placeholder 样式 */
+/* webkit 浏览器*/
+input::-webkit-input-placeholder {
+  color: #ccc; }
+
+/* 火狐浏览器 */
+input::-moz-placeholder {
+  color: #ccc; }
+
+input:-ms-input-placeholder {
+  color: #ccc; }
+
+/* 谷歌浏览器input自动填充内容，背景色会是黄色===解决 */
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important; }
+
+/* 省略号 === 单行 */
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block; }
+
+/* 多行省略号 === 多行 只需在外层改 -webkit-line-clamp:2|3|... */
+.multi-ellipsis {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden; }
+
+  .common-width{width: 1000px;margin: 0 auto;}

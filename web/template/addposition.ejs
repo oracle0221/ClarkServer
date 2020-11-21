@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>合作系统</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/add.css">
+<script src="/js/jquery.js"></script>
+<script src="/js/province.js"></script>
+<script src="/js/zhineng.js"></script>
+</head>
+<body>
+<div class="topNav common-width">
+	<button class="nav-btn" onclick="window.location.href='/web/addpos';" >+发布职位</button>
+	<button class="nav-btn" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
+</div>
+<div class="form common-width" >
+<h1>发布职位</h1>
+<div class="label">客户公司</div>
+<ul>
+	<li class="li-item">
+		<div class="left-label">
+			填写客户公司<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<input type="text" id="J_Client" name="client" class="large-input">
+		</div>
+	</li>
+</ul>
+<div class="label">职位信息</div>
+<ul>
+	<li class="li-item">
+		<div class="left-label">
+			职位名称<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<input type="text" id="J_Position" name="position" class="large-input">
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			行业职能<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<select name="pos" id="J_KaiFa">
+				<option value=""></option>
+			</select>
+			<select name="subpos" id="J_Java">
+				<option value=""></option>
+			</select>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			薪资范围<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<input type="number" name="salary_min" id="J_SalaryMin">-<input type="number" name="salary_max" id="J_SalaryMax">万/年
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			薪酬结构
+		</div>
+		<div class="right-cont">
+			<input type="text" name="salary_info" id="J_SalaryInfo" class="large-input" placeholder="请输入工资、奖金、提成及补贴等信息" >
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			所在城市<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			省：
+			<select name="province" id="J_Province">
+				<option value="">北京</option>
+				<option value="">上海</option>
+				<option value="">深圳</option>
+			</select>
+			市：
+			<select name="city" id="J_City"></select>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			汇报对象
+		</div>
+		<div class="right-cont">
+			<input type="text" name="report" id="J_Report" class="large-input" >
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			职位详情<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<textarea placeholder="请输入职位亮点、工作职责、汇报对象、下属人数、到岗时间、开放原因等职位信息" name="detail_pos" id="J_DetailPos" class="large-txt" cols="30" rows="10"></textarea>
+		</div>
+	</li>
+</ul>
+<div class="label">任职要求</div>
+<ul>
+	<li class="li-item">
+		<div class="left-label">年龄范围</div>
+		<div class="right-cont">
+			<input type="number" name="age_min" id="J_AgeMin">-<input type="number" name="age_max" id="J_AgeMax">岁
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">性别</div>
+		<div class="right-cont">
+			<input type="radio" checked name="gender" value="0" id="g1"><label for="g1">男</label>
+			<input type="radio" name="gender" value="1" id="g2"><label for="g2">女</label>
+			<input type="radio" name="gender" value="2" id="g3"><label for="g3">不限</label>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">学历</div>
+		<div class="right-cont">
+			<select name="graduation" id="J_Graduation">
+				<option value="1">大专</option>
+				<option value="2">本科</option>
+				<option value="3">硕士</option>
+				<option value="4">博士</option>
+				<option value="5">博士后</option>
+				<option value="6">MBA</option>
+			</select>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			搜寻思路
+		</div>
+		<div class="right-cont">
+			<textarea placeholder="请输入其它任职要求、目标公司、职位偏好等指导信息" name="other_info" id="J_OtherInfo" class="large-txt" cols="30" rows="10"></textarea>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">&nbsp;</div>
+		<div class="right-cont">
+			<button class="submit" id="J_Sumbit" >确定提交</button>
+		</div>
+	</li>
+	<li class="errli li-item" ><label class="left-label">&nbsp;</label><span class="right-cont"></span></li>
+</ul>
+</div>
+<script>
+
+// 填充省市数据先
+void function(){
+
+	var J_Province = document.getElementById('J_Province');
+	var J_City = document.getElementById('J_City');
+
+	// Provice
+	J_Province.innerHTML = '';
+	for( var attr in Province ){
+		J_Province.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ Province[attr] +'</option>' );
+	}
+
+	// City
+	decideCity( J_Province.value );
+
+	J_Province.onchange = function(){
+		decideCity( J_Province.value );
+	}
+
+   // 根据省来决定市
+   function decideCity(pid){
+
+	var oCity = City[pid];
+	J_City.innerHTML = '';
+
+	for( var attr in oCity ){
+		J_City.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ oCity[attr] +'</option>' );
+	}
+
+   }
+
+}();
+
+// 互联网职能
+void function(){
+
+	var J_KaiFa = document.getElementById('J_KaiFa');
+	var J_Java  = document.getElementById('J_Java');
+
+	// 开发 
+	J_KaiFa.innerHTML = '';
+	for( var attr in Internet ){
+		J_KaiFa.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ Internet[attr] +'</option>' );
+	}
+
+
+	// 具体的岗位，java,js
+	decideJava(J_KaiFa.value);
+	J_KaiFa.onchange = function(){
+		decideJava( J_KaiFa.value );
+	}
+
+	function decideJava(pid){
+		var oGangWei = GangWei[pid];
+
+		J_Java.innerHTML = '';
+		for( var attr in oGangWei ){
+			J_Java.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ oGangWei[attr] +'</option>' );
+		}
+	}
+
+}();
+
+// 表单处理
+void function(){
+	var ready = true;
+	
+	J_Sumbit.onclick = function(){
+
+		var bRes = validate();
+
+		if(!bRes) return;
+
+		if(!ready) return;
+		ready = false;
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/web/addpos', true );
+
+		xhr.onreadystatechange = function(){
+
+			if( xhr.readyState == 4 ){
+
+				if( xhr.status == 200 ){
+					
+					alert('提交成功');
+				}
+				ready = true;
+			}
+
+		};
+
+		var formData = new FormData();
+		for( var field in bRes ){
+			formData.append( field, bRes[field] );
+		}
+
+		xhr.send(formData);
+
+	}
+
+	function validate(){
+		// 填写客户公司
+		var J_Client = document.getElementById('J_Client');
+		var sclient = J_Client.value.trim();
+		if( !(/\S/.test(sclient)) ){
+
+			return resetError('请填写客户公司');
+		}
+
+		// 职位名称
+		var J_Position = document.getElementById('J_Position');
+		var sPosition  = J_Position.value.trim();
+
+		if( !(/\S/.test(sPosition)) ){
+
+			return resetError('请填写职位名称');
+		}
+	
+		// 薪资范围
+		var J_SalaryMin = document.getElementById('J_SalaryMin');
+		var J_SalaryMax = document.getElementById('J_SalaryMax');
+		
+		var iSalaryMin = +J_SalaryMin.value.trim();
+		var iSalaryMax = +J_SalaryMax.value.trim();
+		
+		if( !iSalaryMin || !iSalaryMax ){
+			return resetError('请填写薪资范围');
+		}
+		
+		if( iSalaryMin > iSalaryMax ){
+			return resetError('薪资范围出现异常');
+		}
+		
+		// 职位详情
+		var J_DetailPos = document.getElementById('J_DetailPos');
+		var detail_pos  = J_DetailPos.value.trim();
+		if( !(/\S/.test(detail_pos)) ){
+
+			return resetError('请填写职位详情');
+		}
+		
+		
+
+		return {
+			client : J_Client.value.trim(),
+			position : J_Position.value.trim(),
+			pos_id : +J_KaiFa.value,
+			pos    : J_KaiFa.options[J_KaiFa.selectedIndex].innerHTML,
+			subpos_id : +J_Java.value,
+			subpos    : J_Java.options[J_Java.selectedIndex].innerHTML,
+			salary_min : +J_SalaryMin.value.trim(),
+			salary_max: +J_SalaryMax.value.trim(),
+			salary_info : J_SalaryInfo.value.trim(),
+			province  : J_Province.options[J_Province.selectedIndex].innerHTML,
+			province_id : +J_Province.value,
+			city_id : +J_City.value,
+			city : J_City.options[J_City.selectedIndex].innerHTML,
+			report : J_Report.value.trim(),
+			detail_pos : J_DetailPos.value.trim(),
+			age_min : +J_AgeMin.value.trim(),
+			age_max : +J_AgeMax.value.trim(),
+			gender : +$('[name=gender]:checked')[0].value,
+			graduation : +J_Graduation.value,
+			other_info : J_OtherInfo.value.trim()
+		};
+	}
+
+	function resetError(msg){
+		$('.errli span').html(msg);
+		setTimeout( function(){
+
+			$('.errli span').html('');
+
+		}, 3000 );
+
+		return false;
+
+	}
+
+}();
+
+</script>
+</body>
+</html>

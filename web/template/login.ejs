@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>登录</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/login.css">
+<script src="/js/jquery.js"></script>
+</head>
+<body>
+<div class="loginbox">
+    <!--<h1>欢迎</h1>-->
+    <ul>
+        <li><label for="username">用户:</label><input id="username" type="text"></li>
+        <li><label for="password">密码:</label><input id="password" type="password"></li>
+        <li><label>&nbsp;</label><button class="login-btn" id="J_Login" >登&nbsp;&nbsp;录</button></li>
+        <li class="errli" ><label>&nbsp;</label><span></span></li>
+    </ul>
+</div>
+<script>
+
+// 处理登录
+$( function(){
+	
+	var ready = true;
+
+	$('#J_Login').on( 'click', function(){
+
+		var username = $.trim( $('#username').val() );
+		var password = $('#password').val();
+
+		if( username == '' ){
+			
+			resetError('请填写用户名');
+
+			return;
+		}
+
+		if( password == '' ){
+			resetError('请填写密码');
+
+			return;
+		}
+
+		$.ajax({
+			url:'',
+			type:'POST',
+			data:{
+				username:username,
+				password:password
+			},
+			dataType:'json',
+			success : function(data){
+				if( !data.code ){
+					window.location.href = '/web/person_info';
+				}else{
+					resetError(data.msg);
+				}
+			},
+			error : function(){
+
+			}
+		});
+
+	} );
+
+
+	function resetError(msg){
+		$('.errli span').html(msg);
+		setTimeout( function(){
+
+			$('.errli span').html('');
+
+		}, 3000 );
+
+	}
+
+
+} );
+
+</script>
+</body>
+</html>

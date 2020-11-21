@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>合作系统</title>
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/add.css">
+<script src="/js/jquery.js"></script>
+<script src="/js/province.js"></script>
+<script src="/js/zhineng.js"></script>
+</head>
+<body>
+<div class="topNav common-width">
+	<button class="nav-btn" onclick="window.location.href='/web/addpos';" >+发布职位</button>
+	<button class="nav-btn" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
+</div>
+<div class="form common-width" >
+<div class="label">个人信息</div>
+<ul>
+	<li class="li-item">
+		<div class="left-label">
+			候选人姓名<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<input type="text" id="J_UserName" name="username" class="large-input">
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			候选人生日<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<select name="year" id="J_Year">
+				<option value="1960">1960年</option><option value="1961">1961年</option><option value="1962">1962年</option><option value="1963">1963年</option><option value="1964">1964年</option><option value="1965">1965年</option><option value="1966">1966年</option><option value="1967">1967年</option><option value="1968">1968年</option><option value="1969">1969年</option><option value="1970">1970年</option><option value="1971">1971年</option><option value="1972">1972年</option><option value="1973">1973年</option><option value="1974">1974年</option><option value="1975">1975年</option><option value="1976">1976年</option><option value="1977">1977年</option><option value="1978">1978年</option><option value="1979">1979年</option><option value="1980" selected="">1980年</option><option value="1981">1981年</option><option value="1982">1982年</option><option value="1983">1983年</option><option value="1984">1984年</option><option value="1985">1985年</option><option value="1986">1986年</option><option value="1987">1987年</option><option value="1988">1988年</option><option value="1989">1989年</option><option value="1990">1990年</option><option value="1991">1991年</option><option value="1992">1992年</option><option value="1993">1993年</option><option value="1994">1994年</option><option value="1995">1995年</option><option value="1996">1996年</option><option value="1997">1997年</option><option value="1998">1998年</option><option value="1999">1999年</option><option value="2000">2000年</option>				  
+			</select>
+			<select name="month" id="J_Month">
+				<option value="0">请选择</option>
+				<option value="01">1月</option>
+				<option value="02">2月</option>
+				<option value="03">3月</option>
+				<option value="04">4月</option>
+				<option value="05">5月</option>
+				<option value="06">6月</option>
+				<option value="07">7月</option>
+				<option value="08">8月</option>
+				<option value="09">9月</option>
+				<option value="10">10月</option>
+				<option value="11">11月</option>
+				<option value="12">12月</option>
+			</select>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			行业职能(互联网)<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<select name="pos_id" id="J_KaiFa">
+				<option value=""></option>
+			</select>
+			<select name="subpos_id" id="J_Java">
+				<option value=""></option>
+			</select>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			意向城市<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			省:
+			<select name="province_id" id="J_Province">
+				<option value="">北京</option>
+				<option value="">上海</option>
+				<option value="">深圳</option>
+			</select>
+			市:
+			<select name="city_id" id="J_City"></select>
+		</div>
+	</li>
+</ul>
+<ul>
+	<li class="li-item">
+		<div class="left-label">
+			简历备注
+		</div>
+		<div class="right-cont">
+			<input type="text" name="remark" id="J_Remark" class="large-input">
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">
+			上传简历<strong>*</strong>
+		</div>
+		<div class="right-cont">
+			<div><input type="file" name="href" id="J_File"></div>
+			<p class="mark">文件大小不能超过10M,附件支持文件格式为（doc,docx,pdf）</p>
+		</div>
+	</li>
+	<li class="li-item">
+		<div class="left-label">&nbsp;</div>
+		<div class="right-cont">
+			<button class="submit" id="J_Sumbit" >确定提交</button>
+		</div>
+	</li>
+	<li class="errli li-item" ><label class="left-label">&nbsp;</label><span class="right-cont"></span></li>
+</ul>
+</div>
+<script>
+
+// 填充省市数据先
+void function(){
+
+	var J_Province = document.getElementById('J_Province');
+	var J_City = document.getElementById('J_City');
+
+	// Provice
+	J_Province.innerHTML = '';
+	for( var attr in Province ){
+		J_Province.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ Province[attr] +'</option>' );
+	}
+
+	// City
+	decideCity( J_Province.value );
+
+	J_Province.onchange = function(){
+		decideCity( J_Province.value );
+	}
+
+   // 根据省来决定市
+   function decideCity(pid){
+
+	var oCity = City[pid];
+	J_City.innerHTML = '';
+
+	for( var attr in oCity ){
+		J_City.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ oCity[attr] +'</option>' );
+	}
+
+   }
+
+}();
+
+// 互联网职能
+void function(){
+
+	var J_KaiFa = document.getElementById('J_KaiFa');
+	var J_Java  = document.getElementById('J_Java');
+
+	// 开发 
+	J_KaiFa.innerHTML = '';
+	for( var attr in Internet ){
+		J_KaiFa.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ Internet[attr] +'</option>' );
+	}
+
+
+	// 具体的岗位，java,js
+	decideJava(J_KaiFa.value);
+	J_KaiFa.onchange = function(){
+		decideJava( J_KaiFa.value );
+	}
+
+	function decideJava(pid){
+		var oGangWei = GangWei[pid];
+
+		J_Java.innerHTML = '';
+		for( var attr in oGangWei ){
+			J_Java.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ oGangWei[attr] +'</option>' );
+		}
+	}
+
+}();
+
+// 表单处理
+void function(){
+	var ready = true;
+	
+	J_Sumbit.onclick = function(){
+
+		var bRes = validate();
+
+		if(!bRes) return;
+
+		if(!ready) return;
+		ready = false;
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/web/person_info', true );
+
+		xhr.onreadystatechange = function(){
+
+			if( xhr.readyState == 4 ){
+
+				if( xhr.status == 200 ){
+					
+					alert('提交成功');
+				}
+				ready = true;
+			}
+
+		};
+
+		var formData = new FormData();
+		for( var field in bRes ){
+			formData.append( field, bRes[field] );
+		}
+
+		// 最后把文件加上
+		formData.append('file', J_File.value );
+
+		xhr.send(formData);
+
+	}
+
+	function validate(){
+		// 候选人姓名
+		var J_UserName = document.getElementById('J_UserName');
+		var sUserName = J_UserName.value.trim();
+		if( !(/\S/.test(sUserName)) ){
+
+			return resetError('请填写候选人姓名');
+		}
+
+		// 生日
+		var J_Year = document.getElementById('J_Year');
+		var J_Month = document.getElementById('J_Month');
+
+		if( J_Year.value == 0 || J_Month.value == 0 ){
+			return resetError('请选择生日');
+		}
+
+		// 上传
+		var J_File = document.getElementById('J_File');
+		if( !J_File.value ){
+			return resetError('请上传简历');
+		}
+
+		return {
+			username : sUserName,
+			year : +J_Year.value,
+			month : +J_Month.value,
+			pos_id : +J_KaiFa.value,
+			pos    : J_KaiFa.options[J_KaiFa.selectedIndex].innerHTML,
+			subpos_id : +J_Java.value,
+			subpos    : J_Java.options[J_Java.selectedIndex].innerHTML,
+			province  : J_Province.options[J_Province.selectedIndex].innerHTML,
+			province_id : +J_Province.value,
+			city_id : +J_City.value,
+			city : J_City.options[J_City.selectedIndex].innerHTML,
+			remark : J_Remark.value.trim(),
+			href : '123'
+		};
+	}
+
+	function resetError(msg){
+		$('.errli span').html(msg);
+		setTimeout( function(){
+
+			$('.errli span').html('');
+
+		}, 3000 );
+
+		return false;
+
+	}
+
+}();
+
+</script>
+</body>
+</html>

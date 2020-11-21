@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>登录</title>
+<link rel="stylesheet" href="./css/base.css">
+<link rel="stylesheet" href="./css/login.css">
+<script src="./js/jquery.js"></script>
+</head>
+<body>
+<div class="loginbox">
+    <!--<h1>欢迎</h1>-->
+    <ul>
+        <li><label for="username">用户:</label><input id="username" type="text"></li>
+        <li><label for="password">密码:</label><input id="password" type="password"></li>
+        <li><label>&nbsp;</label><button class="login-btn" id="J_Login" >登&nbsp;&nbsp;录</button></li>
+    </ul>
+</div>
+<script>
+
+var J_username = document.getElementById('username')
+var J_password = document.getElementById('password')
+
+var J_Login = document.getElementById('J_Login');
+J_Login.onclick = function(){
+    if( J_username.value.trim().length === 0 ){
+        setErr(J_username)
+        return;
+    }
+
+    if( J_password.value.trim().length === 0 ){
+        setErr(J_password)
+        return;
+    }
+
+    // 可以提交
+};
+
+function setErr(obj){
+    obj.classList.add('err')
+    clearTimeout(setErr.timer)
+    setErr.timer = setTimeout(function(){
+        obj.classList.remove('err')
+    }, 3000);
+}
+
+</script>
+</body>
+</html>
