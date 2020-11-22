@@ -137,12 +137,7 @@ module.exports=function (){
       if(err){
         console.log(err)
       }else{
-        let arr=[{
-          client:"Coupang",
-          position:"Java",
-          time:"",
-          salary:"30-60",
-        }];
+        
         res.send(data);
       }
     });
