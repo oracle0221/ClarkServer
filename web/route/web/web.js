@@ -143,7 +143,7 @@ module.exports=function (){
           time:"",
           salary:"30-60",
         }];
-        res.send(arr);
+        res.send(data);
       }
     });
   } );
