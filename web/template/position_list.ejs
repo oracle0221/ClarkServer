@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>职位列表预览</title>
+<link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/add.css">
+</head>
+<body>
+<div class="topNav common-width">
+    <button class="nav-btn" onclick="window.location.href='/web/addpos';" >+发布职位</button>
+    <button class="nav-btn" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
+    <button class="nav-btn" onclick="window.location.href='/web/position_list';"  >职位列表</button>
+</div>
+<div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>公司</th>
+            <th>职位</th>
+            <th>开放时间</th>
+            <th>薪资范围</th>
+            <th>推荐</th>
+            <th>面试</th>
+        </tr>
+    </thead>
+    <tbody id="J_tbody" >
+
+    </tbody>
+</table>
+</div>
+<script>
+
+(async function(){
+
+    let res = await fetch('/web/view/position/list')
+    let data = await res.json();
+    let J_tbody = document.getElementById('J_tbody')
+    
+    for( let r = 0; r < data.length; r ++ ){
+        let newTr = document.createElement('tr')
+        let item = data[r];
+        let str = `
+            <td>${item.client}</td>
+            <td>${item.position}</td>
+            <td>开放时间</td>
+            <td>${item.salary}</td>
+            <td>推荐</td>
+            <td>面试</td>
+        `;
+        newTr.innerHTML = str;
+        J_tbody.appendChild(newTr)
+    }
+
+
+})();
+
+</script>
+</body>
+</html>

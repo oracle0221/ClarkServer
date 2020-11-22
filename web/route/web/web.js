@@ -9,6 +9,7 @@ var db=mysql.createPool({host: 'localhost', user: 'root', password: '123456', da
 module.exports=function (){
   var router=express.Router();
 
+
   router.use( (req, res,next)=>{
 
     if( !req.session['admin_id'] && req.url != '/login' ){
@@ -121,6 +122,30 @@ module.exports=function (){
           }
         });
 
+  } );
+
+  // 查看职位列表---页面
+  router.get('/position_list', function(req, res){
+    res.render('position_list.ejs', {});
+  });
+
+  // 查看职位列表---api
+  router.get('/view/position/list', function(req, res){
+    let sql=`select * from position_table`;
+
+    db.query(sql, (err, data)=>{
+      if(err){
+        console.log(err)
+      }else{
+        let arr=[{
+          client:"Coupang",
+          position:"Java",
+          time:"",
+          salary:"30-60",
+        }];
+        res.send(arr);
+      }
+    });
   } );
 
   return router;
