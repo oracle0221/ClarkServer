@@ -1,0 +1,9 @@
+.box-wrapper{
+  display:flex;
+  .box-nav{
+    width:210px;
+  }
+  .box-content{
+    flex:1;
+  }
+}
