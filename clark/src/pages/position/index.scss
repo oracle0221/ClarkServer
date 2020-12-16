@@ -1,0 +1,29 @@
+.position-page{
+  padding-top: 10px;
+  .label{
+    color: #008fd5;
+    font-size: 24px;
+    border-bottom: 2px solid #008fd5;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  ul{
+    list-style: none;
+  }
+
+  .li-box{
+    display:flex;
+    padding-bottom: 10px;
+    text-align: left;
+  }
+
+  .key{
+    width:130px;
+  }
+
+  .val{
+    display: flex;
+  }
+
+}
