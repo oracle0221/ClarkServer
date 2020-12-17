@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {useLocation, Route, useHistory} from 'react-router-dom'
 import Resume from 'pages/resume/index'
 import Position from 'pages/position/index'
+import PositionList from 'pages/positionlist/index'
 import './index.scss'
 
 import { Menu } from 'antd';
@@ -32,11 +33,13 @@ export default () => {
         >
           <Menu.Item key="/admin/resume" icon={<ContainerFilled />}>上传简历</Menu.Item>
           <Menu.Item key="/admin/position" icon={<ContactsFilled />}>发布职位</Menu.Item>
+          <Menu.Item key="/admin/positionlist" icon={<ContactsFilled />}>职位列表</Menu.Item>
         </Menu>
       </div>
       <div className="box-content" >
           <Route path="/admin/resume" component={Resume} />
           <Route path="/admin/position" component={Position} />
+          <Route path="/admin/positionlist" component={PositionList} />
       </div>
     </div>
   );
