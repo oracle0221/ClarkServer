@@ -3,6 +3,7 @@
 const express=require('express');
 const common=require('../../libs/common');
 const mysql=require('mysql');
+const bodyParser = require('body-parser')
 
 var db=mysql.createPool({host: 'localhost', user: 'root', password: '123456', database: 'clark'});
 
@@ -105,7 +106,7 @@ module.exports=function (){
         other_info = req.body.other_info;
 
         // 客户公司不能重复，查重
-        db.query(`SELECT COUNT(*) AS count FROM position_table WHERE client='${client}'`, (err, data)=>{
+        db.query(`SELECT COUNT(*) AS count FROM position_table WHERE client='${client}' AND position='${position}'`, (err, data)=>{
 
           if(err){
             console.error(err);
@@ -120,7 +121,7 @@ module.exports=function (){
               res.send({
                 code : 1,
                 status:500,
-                msg : '公司名重复'
+                msg : '公司名和职位名重复'
             }).end();
               return;
             }
@@ -161,6 +162,31 @@ module.exports=function (){
 
   } );
 
+  // 添加公司详情
+  router.post('/client/detail', bodyParser.json(), (req, res)=>{
+
+    db.query(`update client_table set detail='${req.body.detail}' where client='${req.body.client}'`, (err, data)=>{
+
+      if(err){
+        console.log(err);
+        res.send({
+            code : 1,
+            status : 500,
+            msg : '更新出错'
+        }).end();
+      }else{
+        res.send({
+            code : 0,
+            status : 200,
+            msg : 'success',
+            data:''
+        }).end();
+      }
+
+    });
+
+  });
+
   // 得到公司详情
   router.get('/client/detail', (req, res)=>{
     // console.log(req.query)
@@ -195,6 +221,28 @@ module.exports=function (){
 
 
 
+  });
+
+  // 得到候选人列表
+  router.get('/candidate_list', (req, res)=>{
+    db.query(`select * from person_table`, (err, data)=>{
+      if(err){
+        console.log(err)
+        res.send({
+            code : 1,
+            status : 500,
+            msg : '读取候选人有误'
+        }).end();
+      }else{
+        // console.log(data)
+        res.send({
+            code : 0,
+            status : 200,
+            msg : 'success',
+            data,
+        }).end();
+      }
+    });
   });
 
   // 查看职位列表---页面

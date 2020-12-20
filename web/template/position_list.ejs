@@ -53,6 +53,8 @@
 </div>
 <script>
 
+let nowClient='';
+
 (async function(){
 
     let res = await fetch('/web/view/position/list')
@@ -81,6 +83,8 @@ document.getElementById('J_client_close').onclick=function(){
   document.getElementById('J_client_pop').style.display='none';
 };
 async function openClientDialog(client){
+  nowClient = client;
+
   document.getElementById('J_client_pop').style.display='block';
   document.getElementById('J_client_name').innerHTML=client;
 
@@ -97,10 +101,27 @@ async function openClientDialog(client){
 
 }
 
-$('#J_submit_client').click(function(){
+$('#J_submit_client').click(async function(){
 
   if($('#J_client_txt').val().trim().length == 0){
+    $('#client_err').html('公司详情不能为空')
+    setTimeout(()=>{
+      $('#client_err').html('')
+    }, 3000)
+  }else{
+    let res = await fetch('/web/client/detail', {
+      method:'post',
+      headers:{
+        'content-type':'application/json'
+      },
+      body:JSON.stringify({
+        client:nowClient,
+        detail:$('#J_client_txt').val().trim(),
+      })
+    })
 
+    res = await res.json()
+    document.getElementById('J_client_close').onclick()
   }
 
 });

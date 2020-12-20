@@ -9,6 +9,13 @@
 <script src="/js/jquery.js"></script>
 <script src="/js/province.js"></script>
 <script src="/js/zhineng.js"></script>
+<style media="screen">
+.tag-div span{
+	padding: 4px;
+	border:1px solid black;
+	margin: 2px;
+}
+</style>
 </head>
 <body>
 <div class="topNav common-width">
@@ -37,6 +44,15 @@
 		</div>
 		<div class="right-cont">
 			<input type="text" id="J_Position" name="position" class="large-input">
+		</div>
+	</li>
+	<li  class="li-item">
+		<div class="left-label">
+			关联候选人<strong></strong>
+		</div>
+		<div class="right-cont">
+			<a href="javascript:;" style="color:blue;" id="J_tag_add" >添加</a>
+			<div class="tag-div" id="J_tag_div" style="display:inline-block;" ></div>
 		</div>
 	</li>
 	<li class="li-item">
@@ -150,10 +166,30 @@
 </ul>
 
 </div>
+<div class="modal bs-example-modal-lg" id="J_pos_pop" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" >
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span id="J_pos_close" aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myLargeModalLabel"><span id="J_client_name" ></span></h4>
+      </div>
+      <div class="modal-body">
+        <h3>添加候选人</h3>
+        <div class="pos-sel-ul">
+        	<ul id="J_pos_sel" ></ul>
+        </div>
+        <div class="" style="text-align: right;padding-top:10px;" >
+          <span class="err" id="pos_err" ></span>
+          <a href="javascript:;" class="btn btn-primary" id="J_submit_pos" role="button">确定</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
 
 // 填充省市数据先
-void function(){
+void async function(){
 
 	var J_Province = document.getElementById('J_Province');
 	var J_City = document.getElementById('J_City');
@@ -183,7 +219,86 @@ void function(){
 
    }
 
+	 // 读取候选人列表
+	 let res = await fetch('/web/candidate_list')
+	 res = await res.json();
+	 // console.log(res)
+	 let J_pos_sel = document.getElementById('J_pos_sel')
+	 J_pos_sel.innerHTML=''
+	 res.data.forEach(row=>{
+
+		 let newLi = document.createElement('li')
+		 let id=`ID: ${row.ID}, `;
+		 let username = `Name: ${row.username}`;
+		 newLi.dataset.userid=row.ID;
+		 newLi.dataset.username=row.username;
+
+		 newLi.innerHTML = id+username;
+		 J_pos_sel.appendChild(newLi)
+
+		 // newLi.dataset.
+
+		 newLi.onclick = function(){
+			 if( this.classList.contains('active') ){
+				 this.classList.remove('active')
+			 }else{
+				 this.classList.add('active')
+			 }
+
+		 }
+
+	 });
+
 }();
+
+$('#J_submit_pos').click(function(){
+
+	let J_pos_sel = document.getElementById('J_pos_sel')
+	let aLi = J_pos_sel.getElementsByTagName('li')
+
+	let res=[]
+
+	Array.from(aLi).forEach(obj=>{
+		if(obj.classList.contains('active')){
+			res.push({id:obj.dataset.userid, name:obj.dataset.username})
+		}
+	});
+
+	let J_tag_div = document.getElementById('J_tag_div')
+	let sHtml=''
+	res.forEach(obj=>{
+		let oSpan = `<span data-userid="${obj.id}" data-username="${obj.name}" >ID:${obj.id}, Name: ${obj.name}</span>`
+		sHtml+=oSpan
+	})
+
+	J_tag_div.innerHTML=sHtml;
+	$('#J_pos_close').click()
+
+});
+
+$('#J_pos_close').click(function(){
+	document.getElementById('J_pos_pop').style.display="none"
+})
+
+$('#J_tag_add').click(function(){
+	document.getElementById('J_pos_pop').style.display="block"
+	let J_pos_sel = document.getElementById('J_pos_sel')
+	let aLi = J_pos_sel.getElementsByTagName('li')
+	Array.from(aLi).forEach(objLi=>{
+		objLi.classList.remove('active')
+	})
+
+	let J_tag_div = document.getElementById('J_tag_div')
+	Array.from(J_tag_div.getElementsByTagName('span')).forEach(objSpan=>{
+		let spanId = objSpan.dataset.userid
+		Array.from(aLi).forEach(objLi=>{
+			let liId = objLi.dataset.userid
+			if(spanId == liId){
+				objLi.classList.add('active')
+			}
+		})
+	})
+});
 
 // 互联网职能
 void function(){

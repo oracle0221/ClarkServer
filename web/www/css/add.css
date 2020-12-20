@@ -58,3 +58,20 @@
 	color:blue;
 	text-decoration: underline;
 }
+
+.pos-sel-ul{
+
+}
+
+.pos-sel-ul li{
+	font-size: 16px;
+	margin: 4px;
+	padding-left: 6px;
+	cursor: pointer;
+}
+
+.pos-sel-ul li.active{
+	background: lightblue;
+	color:white;
+
+}
