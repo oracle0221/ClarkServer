@@ -19,9 +19,16 @@
 </div>
 <script>
 
+document.getElementById('password').onkeyup = e=>{
+  if(e.keyCode == 13){
+      $('#J_Login').click();
+  }
+
+}
+
 // 处理登录
 $( function(){
-	
+
 	var ready = true;
 
 	$('#J_Login').on( 'click', function(){
@@ -30,7 +37,7 @@ $( function(){
 		var password = $('#password').val();
 
 		if( username == '' ){
-			
+
 			resetError('请填写用户名');
 
 			return;

@@ -34,7 +34,7 @@ module.exports=function (){
 
   // 个人信息提交 ===== 接口
   router.post('/person_info', function(req, res){
-    
+
      let username = req.body.username,
         year = req.body.year,
         month = req.body.month,
@@ -48,6 +48,8 @@ module.exports=function (){
         city = req.body.city,
         remark = req.body.remark,
         href = req.body.href;
+
+      href = req.files[0].path.replace(/\\+/g, '\\\\'); // 上传的文件名
 
     // 添加
     console.log(`INSERT INTO person_table (username,year,month,pos_id,pos,subpos_id,subpos,province,province_id,city_id,city,remark,href) VALUE('${username}', '${year}', '${month}', '${pos_id}', '${pos}', '${subpos_id}', '${subpos}', '${province}', '${province_id}', '${city_id}', '${city}', '${remark}', '${href}')`);
@@ -68,7 +70,7 @@ module.exports=function (){
             }).end();
           }
         });
-   
+
 
   } );
 
@@ -102,10 +104,9 @@ module.exports=function (){
         graduation = req.body.graduation,
         other_info = req.body.other_info;
 
-    // 添加
-    console.log(`INSERT INTO position_table (client,position,pos_id,pos,subpos_id,subpos,salary_min, salary_max,salary_info, province_id,province,city_id,city,report,detail_pos,age_min, age_max,gender,graduation, other_info ) VALUE('${client}', '${position}', '${pos_id}', '${pos}', '${subpos_id}', '${subpos}', '${salary_min}', '${salary_max}', '${salary_info}', '${province_id}', '${province}', '${city_id}', '${city}', '${report}', '${detail_pos}', '${age_min}', '${age_max}', '${gender}', '${graduation}', '${other_info}')`);
+        // 客户公司不能重复，查重
+        db.query(`SELECT COUNT(*) AS count FROM position_table WHERE client='${client}'`, (err, data)=>{
 
-    db.query(`INSERT INTO position_table (client,position,pos_id,pos,subpos_id,subpos,salary_min, salary_max,salary_info, province_id,province,city_id,city,report,detail_pos,age_min, age_max,gender,graduation, other_info ) VALUE('${client}', '${position}', '${pos_id}', '${pos}', '${subpos_id}', '${subpos}', '${salary_min}', '${salary_max}', '${salary_info}', '${province_id}', '${province}', '${city_id}', '${city}', '${report}', '${detail_pos}', '${age_min}', '${age_max}', '${gender}', '${graduation}', '${other_info}')`, (err, data)=>{
           if(err){
             console.error(err);
             res.send({
@@ -114,15 +115,87 @@ module.exports=function (){
               msg : '数据库异常'
           }).end();
           }else{
-            res.send({
-                code : 0,
-                status : 200,
-                msg : 'success'
+            console.log(data[0].count)
+            if(data[0].count > 0){
+              res.send({
+                code : 1,
+                status:500,
+                msg : '公司名重复'
             }).end();
+              return;
+            }
+
+            // 添加公司
+            db.query(`INSERT INTO client_table (client, detail) VALUE('${client}', '')`, (err, data)=>{
+
+              if(err){
+                res.send({
+                  code : 1,
+                  status:500,
+                  msg : '写入公司名出错,请稍后重试'
+              }).end();
+              }else{
+                // 添加
+                console.log(`INSERT INTO position_table (client,position,pos_id,pos,subpos_id,subpos,salary_min, salary_max,salary_info, province_id,province,city_id,city,report,detail_pos,age_min, age_max,gender,graduation, other_info ) VALUE('${client}', '${position}', '${pos_id}', '${pos}', '${subpos_id}', '${subpos}', '${salary_min}', '${salary_max}', '${salary_info}', '${province_id}', '${province}', '${city_id}', '${city}', '${report}', '${detail_pos}', '${age_min}', '${age_max}', '${gender}', '${graduation}', '${other_info}')`);
+                db.query(`INSERT INTO position_table (client,position,pos_id,pos,subpos_id,subpos,salary_min, salary_max,salary_info, province_id,province,city_id,city,report,detail_pos,age_min, age_max,gender,graduation, other_info ) VALUE('${client}', '${position}', '${pos_id}', '${pos}', '${subpos_id}', '${subpos}', '${salary_min}', '${salary_max}', '${salary_info}', '${province_id}', '${province}', '${city_id}', '${city}', '${report}', '${detail_pos}', '${age_min}', '${age_max}', '${gender}', '${graduation}', '${other_info}')`, (err, data)=>{
+                      if(err){
+                        console.error(err);
+                        res.send({
+                          code : 1,
+                          status:500,
+                          msg : '数据库异常'
+                      }).end();
+                      }else{
+                        res.send({
+                            code : 0,
+                            status : 200,
+                            msg : 'success'
+                        }).end();
+                      }
+                    });
+              }
+            });
+
           }
         });
 
   } );
+
+  // 得到公司详情
+  router.get('/client/detail', (req, res)=>{
+    // console.log(req.query)
+    const client = req.query.client;
+    if(!client){
+      res.send({
+          code : 1,
+          status : 500,
+          msg : '公式名不能为空'
+      }).end();
+      return;
+    }
+
+    db.query(`select * from client_table where client='${client}'`, (err, data)=>{
+      if(err){
+        console.log(err)
+        res.send({
+            code : 1,
+            status : 500,
+            msg : '获取公司信息有误'
+        }).end();
+        return;
+      }else{
+        res.send({
+            code : 0,
+            status : 200,
+            msg : 'success',
+            data:data[0].detail
+        }).end();
+      }
+    });
+
+
+
+  });
 
   // 查看职位列表---页面
   router.get('/position_list', function(req, res){
@@ -137,7 +210,7 @@ module.exports=function (){
       if(err){
         console.log(err)
       }else{
-        
+
         res.send(data);
       }
     });

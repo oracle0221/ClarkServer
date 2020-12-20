@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>合作系统</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/base.css">
 <link rel="stylesheet" href="/css/add.css">
 <script src="/js/jquery.js"></script>
@@ -12,11 +13,11 @@
 <body>
 <div class="topNav common-width">
 	<button class="nav-btn" onclick="window.location.href='/web/addpos';" >+发布职位</button>
-	<button class="nav-btn" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
+	<button class="nav-btn" style="color:#008fd5;background: #EEE;" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
 	<button class="nav-btn" onclick="window.location.href='/web/position_list';"  >职位列表</button>
 </div>
 <div class="form common-width" >
-<div class="label">个人信息</div>
+<div class="label1">个人信息</div>
 <ul>
 	<li class="li-item">
 		<div class="left-label">
@@ -32,7 +33,7 @@
 		</div>
 		<div class="right-cont">
 			<select name="year" id="J_Year">
-				<option value="1960">1960年</option><option value="1961">1961年</option><option value="1962">1962年</option><option value="1963">1963年</option><option value="1964">1964年</option><option value="1965">1965年</option><option value="1966">1966年</option><option value="1967">1967年</option><option value="1968">1968年</option><option value="1969">1969年</option><option value="1970">1970年</option><option value="1971">1971年</option><option value="1972">1972年</option><option value="1973">1973年</option><option value="1974">1974年</option><option value="1975">1975年</option><option value="1976">1976年</option><option value="1977">1977年</option><option value="1978">1978年</option><option value="1979">1979年</option><option value="1980" selected="">1980年</option><option value="1981">1981年</option><option value="1982">1982年</option><option value="1983">1983年</option><option value="1984">1984年</option><option value="1985">1985年</option><option value="1986">1986年</option><option value="1987">1987年</option><option value="1988">1988年</option><option value="1989">1989年</option><option value="1990">1990年</option><option value="1991">1991年</option><option value="1992">1992年</option><option value="1993">1993年</option><option value="1994">1994年</option><option value="1995">1995年</option><option value="1996">1996年</option><option value="1997">1997年</option><option value="1998">1998年</option><option value="1999">1999年</option><option value="2000">2000年</option>				  
+				<option value="1960">1960年</option><option value="1961">1961年</option><option value="1962">1962年</option><option value="1963">1963年</option><option value="1964">1964年</option><option value="1965">1965年</option><option value="1966">1966年</option><option value="1967">1967年</option><option value="1968">1968年</option><option value="1969">1969年</option><option value="1970">1970年</option><option value="1971">1971年</option><option value="1972">1972年</option><option value="1973">1973年</option><option value="1974">1974年</option><option value="1975">1975年</option><option value="1976">1976年</option><option value="1977">1977年</option><option value="1978">1978年</option><option value="1979">1979年</option><option value="1980" selected="">1980年</option><option value="1981">1981年</option><option value="1982">1982年</option><option value="1983">1983年</option><option value="1984">1984年</option><option value="1985">1985年</option><option value="1986">1986年</option><option value="1987">1987年</option><option value="1988">1988年</option><option value="1989">1989年</option><option value="1990">1990年</option><option value="1991">1991年</option><option value="1992">1992年</option><option value="1993">1993年</option><option value="1994">1994年</option><option value="1995">1995年</option><option value="1996">1996年</option><option value="1997">1997年</option><option value="1998">1998年</option><option value="1999">1999年</option><option value="2000">2000年</option>
 			</select>
 			<select name="month" id="J_Month">
 				<option value="0">请选择</option>
@@ -106,7 +107,9 @@
 	</li>
 	<li class="errli li-item" ><label class="left-label">&nbsp;</label><span class="right-cont"></span></li>
 </ul>
+<div class="alert alert-success" id="J_success" role="alert" style="display: none;" >提交成功</div>
 </div>
+
 <script>
 
 // 填充省市数据先
@@ -148,7 +151,7 @@ void function(){
 	var J_KaiFa = document.getElementById('J_KaiFa');
 	var J_Java  = document.getElementById('J_Java');
 
-	// 开发 
+	// 开发
 	J_KaiFa.innerHTML = '';
 	for( var attr in Internet ){
 		J_KaiFa.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ Internet[attr] +'</option>' );
@@ -175,7 +178,7 @@ void function(){
 // 表单处理
 void function(){
 	var ready = true;
-	
+
 	J_Sumbit.onclick = function(){
 
 		var bRes = validate();
@@ -193,8 +196,10 @@ void function(){
 			if( xhr.readyState == 4 ){
 
 				if( xhr.status == 200 ){
-					
-					alert('提交成功');
+					document.getElementById('J_success').style.display='block';
+					setTimeout(function(){
+						window.location.reload(true);
+					}, 3000)
 				}
 				ready = true;
 			}
@@ -207,7 +212,7 @@ void function(){
 		}
 
 		// 最后把文件加上
-		formData.append('file', J_File.value );
+		formData.append('file', J_File.files[0] );
 
 		xhr.send(formData);
 
@@ -232,7 +237,7 @@ void function(){
 
 		// 上传
 		var J_File = document.getElementById('J_File');
-		if( !J_File.value ){
+		if( !J_File.files.length ){
 			return resetError('请上传简历');
 		}
 

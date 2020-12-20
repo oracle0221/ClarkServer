@@ -7,14 +7,16 @@
 <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/css/base.css">
 <link rel="stylesheet" href="/css/add.css">
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="topNav common-width">
     <button class="nav-btn" onclick="window.location.href='/web/addpos';" >+发布职位</button>
     <button class="nav-btn" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
-    <button class="nav-btn" onclick="window.location.href='/web/position_list';"  >职位列表</button>
+    <button class="nav-btn" style="color:#008fd5;background: #EEE;" onclick="window.location.href='/web/position_list';"  >职位列表</button>
 </div>
-<div>
+<div style="padding-top:10px;" >
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -31,6 +33,24 @@
     </tbody>
 </table>
 </div>
+<div class="modal bs-example-modal-lg" id="J_client_pop" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span id="J_client_close" aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myLargeModalLabel"><span id="J_client_name" ></span></h4>
+      </div>
+      <div class="modal-body">
+        <h3>公司信息</h3>
+        <textarea rows="6" cols="6" style="width:100%;border-radius:6px;height:300px;" id="J_client_txt" ></textarea>
+        <div class="" style="text-align: right;padding-top:10px;" >
+          <span class="err" id="client_err" ></span>
+          <a href="javascript:;" class="btn btn-primary" id="J_submit_client" role="button">确定</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
 
 (async function(){
@@ -38,12 +58,12 @@
     let res = await fetch('/web/view/position/list')
     let data = await res.json();
     let J_tbody = document.getElementById('J_tbody')
-    
+
     for( let r = 0; r < data.length; r ++ ){
         let newTr = document.createElement('tr')
         let item = data[r];
         let str = `
-            <td>${item.client}</td>
+            <td><a class="client-a" onclick="openClientDialog('${item.client}')" >${item.client}</a></td>
             <td>${item.position}</td>
             <td>开放时间</td>
             <td>${item.salary_min}-${item.salary_max}(${item.salary_info})</td>
@@ -54,8 +74,36 @@
         J_tbody.appendChild(newTr)
     }
 
-
 })();
+
+
+document.getElementById('J_client_close').onclick=function(){
+  document.getElementById('J_client_pop').style.display='none';
+};
+async function openClientDialog(client){
+  document.getElementById('J_client_pop').style.display='block';
+  document.getElementById('J_client_name').innerHTML=client;
+
+  let res = await fetch('/web/client/detail?client='+client)
+  res = await res.json()
+  if(res.status != 200){
+    $('#client_err').html(res.msg);
+    setTimeout(()=>{
+      $('#client_err').html('');
+    }, 3000)
+  }else{
+    $('#J_client_txt').html(res.data);
+  }
+
+}
+
+$('#J_submit_client').click(function(){
+
+  if($('#J_client_txt').val().trim().length == 0){
+
+  }
+
+});
 
 </script>
 </body>

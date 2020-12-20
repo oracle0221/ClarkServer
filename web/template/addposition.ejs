@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>合作系统</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/base.css">
 <link rel="stylesheet" href="/css/add.css">
 <script src="/js/jquery.js"></script>
@@ -11,13 +12,13 @@
 </head>
 <body>
 <div class="topNav common-width">
-	<button class="nav-btn" onclick="window.location.href='/web/addpos';" >+发布职位</button>
+	<button class="nav-btn" style="color:#008fd5;background: #EEE;" onclick="window.location.href='/web/addpos';" >+发布职位</button>
 	<button class="nav-btn" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
 	<button class="nav-btn" onclick="window.location.href='/web/position_list';"  >职位列表</button>
 </div>
 <div class="form common-width" >
 <h1>发布职位</h1>
-<div class="label">客户公司</div>
+<div class="label1">客户公司</div>
 <ul>
 	<li class="li-item">
 		<div class="left-label">
@@ -28,7 +29,7 @@
 		</div>
 	</li>
 </ul>
-<div class="label">职位信息</div>
+<div class="label1">职位信息</div>
 <ul>
 	<li class="li-item">
 		<div class="left-label">
@@ -136,6 +137,9 @@
 			<textarea placeholder="请输入其它任职要求、目标公司、职位偏好等指导信息" name="other_info" id="J_OtherInfo" class="large-txt" cols="30" rows="10"></textarea>
 		</div>
 	</li>
+	<li>
+		<div class="alert alert-success" id="J_success" role="alert" style="display: none;" >提交成功</div>
+	</li>
 	<li class="li-item">
 		<div class="left-label">&nbsp;</div>
 		<div class="right-cont">
@@ -144,6 +148,7 @@
 	</li>
 	<li class="errli li-item" ><label class="left-label">&nbsp;</label><span class="right-cont"></span></li>
 </ul>
+
 </div>
 <script>
 
@@ -186,7 +191,7 @@ void function(){
 	var J_KaiFa = document.getElementById('J_KaiFa');
 	var J_Java  = document.getElementById('J_Java');
 
-	// 开发 
+	// 开发
 	J_KaiFa.innerHTML = '';
 	for( var attr in Internet ){
 		J_KaiFa.insertAdjacentHTML('beforeend', '<option value="'+ attr +'">'+ Internet[attr] +'</option>' );
@@ -213,7 +218,7 @@ void function(){
 // 表单处理
 void function(){
 	var ready = true;
-	
+
 	J_Sumbit.onclick = function(){
 
 		var bRes = validate();
@@ -231,8 +236,17 @@ void function(){
 			if( xhr.readyState == 4 ){
 
 				if( xhr.status == 200 ){
-					
-					alert('提交成功');
+					console.log(JSON.parse(xhr.responseText))
+					let data = JSON.parse(xhr.responseText)
+					if(data.status==500){
+						resetError(data['msg']);
+					}else{
+						document.getElementById('J_success').style.display='block';
+						setTimeout(function(){
+							window.location.reload(true);
+						}, 3000)
+					}
+
 				}
 				ready = true;
 			}
@@ -265,22 +279,22 @@ void function(){
 
 			return resetError('请填写职位名称');
 		}
-	
+
 		// 薪资范围
 		var J_SalaryMin = document.getElementById('J_SalaryMin');
 		var J_SalaryMax = document.getElementById('J_SalaryMax');
-		
+
 		var iSalaryMin = +J_SalaryMin.value.trim();
 		var iSalaryMax = +J_SalaryMax.value.trim();
-		
+
 		if( !iSalaryMin || !iSalaryMax ){
 			return resetError('请填写薪资范围');
 		}
-		
+
 		if( iSalaryMin > iSalaryMax ){
 			return resetError('薪资范围出现异常');
 		}
-		
+
 		// 职位详情
 		var J_DetailPos = document.getElementById('J_DetailPos');
 		var detail_pos  = J_DetailPos.value.trim();
@@ -288,8 +302,8 @@ void function(){
 
 			return resetError('请填写职位详情');
 		}
-		
-		
+
+
 
 		return {
 			client : J_Client.value.trim(),
