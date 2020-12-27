@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>职位列表预览</title>
+<title>候选人列表预览</title>
 <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/css/base.css">
 <link rel="stylesheet" href="/css/add.css">
@@ -14,19 +14,16 @@
 <div class="topNav common-width">
     <button class="nav-btn" onclick="window.location.href='/web/addpos';" >+发布职位</button>
     <button class="nav-btn" onclick="window.location.href='/web/person_info';"  >+上传简历</button>
-    <button class="nav-btn" style="color:#008fd5;background: #EEE;" onclick="window.location.href='/web/position_list';"  >职位列表</button>
-    <button class="nav-btn" onclick="window.location.href='/web/person_list';"  >候选人列表</button>
+    <button class="nav-btn" onclick="window.location.href='/web/position_list';"  >职位列表</button>
+    <button class="nav-btn" style="color:#008fd5;background: #EEE;"  >候选人列表</button>
 </div>
 <div style="padding-top:10px;" >
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>公司</th>
-            <th>职位</th>
-            <th>开放时间</th>
-            <th>薪资范围</th>
-            <th>推荐</th>
-            <th>面试</th>
+            <th>姓名</th>
+            <th>应聘职位</th>
+            <th>简历</th>
         </tr>
     </thead>
     <tbody id="J_tbody" >
@@ -58,20 +55,18 @@ let nowClient='';
 
 (async function(){
 
-    let res = await fetch('/web/view/position/list')
+    let res = await fetch('/web/view/person/list')
     let data = await res.json();
     let J_tbody = document.getElementById('J_tbody')
+    console.log(data)
 
     for( let r = 0; r < data.length; r ++ ){
         let newTr = document.createElement('tr')
         let item = data[r];
         let str = `
-            <td><a class="client-a" onclick="openClientDialog('${item.client}')" >${item.client}</a></td>
-            <td>${item.position}</td>
-            <td>开放时间</td>
-            <td>${item.salary_min}-${item.salary_max}(${item.salary_info})</td>
-            <td>推荐</td>
-            <td>面试</td>
+            <td><a>${item.username}</a></td>
+            <td>${item.pos}/${item.subpos}</td>
+            <td><a download href="/${item.href.replace('static/', '')}" style="color:blue;" >附件简历</a></td>
         `;
         newTr.innerHTML = str;
         J_tbody.appendChild(newTr)
@@ -79,53 +74,6 @@ let nowClient='';
 
 })();
 
-
-document.getElementById('J_client_close').onclick=function(){
-  document.getElementById('J_client_pop').style.display='none';
-};
-async function openClientDialog(client){
-  nowClient = client;
-
-  document.getElementById('J_client_pop').style.display='block';
-  document.getElementById('J_client_name').innerHTML=client;
-
-  let res = await fetch('/web/client/detail?client='+client)
-  res = await res.json()
-  if(res.status != 200){
-    $('#client_err').html(res.msg);
-    setTimeout(()=>{
-      $('#client_err').html('');
-    }, 3000)
-  }else{
-    $('#J_client_txt').html(res.data);
-  }
-
-}
-
-$('#J_submit_client').click(async function(){
-
-  if($('#J_client_txt').val().trim().length == 0){
-    $('#client_err').html('公司详情不能为空')
-    setTimeout(()=>{
-      $('#client_err').html('')
-    }, 3000)
-  }else{
-    let res = await fetch('/web/client/detail', {
-      method:'post',
-      headers:{
-        'content-type':'application/json'
-      },
-      body:JSON.stringify({
-        client:nowClient,
-        detail:$('#J_client_txt').val().trim(),
-      })
-    })
-
-    res = await res.json()
-    document.getElementById('J_client_close').onclick()
-  }
-
-});
 
 </script>
 </body>

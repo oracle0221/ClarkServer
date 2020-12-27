@@ -264,5 +264,24 @@ module.exports=function (){
     });
   } );
 
+  // 查看候选人列表---页面
+  router.get('/person_list', function(req, res){
+    res.render('person_list.ejs', {});
+  });
+
+  // 候选人列表
+  router.get('/view/person/list', (req, res)=>{
+    let sql=`select * from person_table`;
+
+    db.query(sql, (err, data)=>{
+      if(err){
+        console.log(err)
+      }else{
+
+        res.send(data);
+      }
+    });
+  });
+
   return router;
 };
